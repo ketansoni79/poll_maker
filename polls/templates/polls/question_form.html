@@ -1,0 +1,8 @@
+<h1>Create a Poll</h1>
+
+<form method='POST' action=''>
+{% csrf_token %} 
+{{ form.as_p }}
+<input type='submit' value='Create Poll'/>
+</form>
+<a href="{% url 'polls:list' %}"><br>Question list</a>
