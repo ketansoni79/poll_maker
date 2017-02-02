@@ -7,19 +7,29 @@ from .models import Question, Choice
 # Create your views here.
 
 def QuestionCreate(request):
-    form = QuestionForm(request.POST or None)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        print(form.cleaned_data.get('question_text'))
-        instance.save()
+    message = None
+    if request.method == 'POST':
+        ### Please do the form validation here
+        ## if form.is_valid(), form save method etx
+        ## Here I am doing the same view method insted of form save
+        rg = request.POST.get
+        if rg('question_text') and len(rg('choice'))>0:
+            question = Question.objects.create(question_text=rg('question_text'))
+            choices = request.POST.getlist('choice')
+            for choice in choices:
+                choice_q = Choice.objects.create(question=question, choice_text=choice)
+            message = "Successfully added new questsion {0}".format(question.question_text)
+        else:
+            message = "Form Validation Error"
+        form = QuestionForm()
+    else:
+        form = QuestionForm()
+    # if form.is_valid():
+    #     instance = form.save(commit=False)
+    #     print(form.cleaned_data.get('question_text'))
+    #     instance.save()
 
-    # for validatin
-    #form = QuestionForm(request.POST)
-
-    #if request.method == 'POST':
-        #print(request.POST.get('question_text'))
-
-    context = { 'form': form,}
+    context = { 'form': form,'message':message}
     return render(request,'polls/question_form.html',context)
 
 

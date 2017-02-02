@@ -1,8 +1,64 @@
-<h1>Create a Poll</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Create Poll | Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+    var maxField = 10; //Input fields increment limitation
+    var addButton = $('.add_field_button'); //Add button selector
+    var wrapper = $('.field_wrapper'); //Input field wrapper
+    var fieldHTML = '<div class="form-group"><label for="inputdefault">Choice</label> <input type="text" name="choice" value=""/><a href="javascript:void(0);" class="remove_button" title="Remove field">  <i class="more-less glyphicon glyphicon-remove"></i></a></div>'; //New input field html 
+    var x = 1; //Initial field counter is 1
+    $(addButton).click(function(){ //Once add button is clicked
+        if(x < maxField){ //Check maximum number of input fields
+            x++; //Increment field counter
+            $(wrapper).append(fieldHTML); // Add field html
+        }
+    });
+    $(wrapper).on('click', '.remove_button', function(e){ //Once remove button is clicked
+        e.preventDefault();
+        $(this).parent('div').remove(); //Remove field html
+        x--; //Decrement field counter
+    });
+});
+</script>
+</head>
+<body>
 
-<form method='POST' action=''>
-{% csrf_token %} 
-{{ form.as_p }}
-<input type='submit' value='Create Poll'/>
-</form>
+<div class="container">
+  <h2>Create Poll</h2>
+  <p></p>
+  <form class="form-horizontal" method="post" action="{% url 'polls:question_create' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="inputdefault">Question</label>
+            {{ form.question_text }}
+        </div>
+        <a href="javascript:void(0);" class="add_field_button" > <i class="more-less glyphicon glyphicon-plus"></i> Add More choice</a>
+
+        {% if message %}
+
+        <div class="alert alert-warning">
+            <strong>{{message}}</strong>
+        </div>
+
+        {% endif%}
+
+        <div class="field_wrapper"> 
+            <div class="form-group">
+                <label for="inputdefault">Choice</label>
+                {{ form.choice }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 <a href="{% url 'polls:list' %}"><br>Question list</a>
+
+</body>
+</html>
